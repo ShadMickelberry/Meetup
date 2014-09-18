@@ -1,5 +1,6 @@
 <?php
 
+
 class Meetup {
 	const BASE = 'https://api.meetup.com';
 
@@ -18,14 +19,33 @@ class Meetup {
 	public function getPhotos(array $parameters = array()) {
 		return $this->get('/2/photos', $parameters)->results;
 	}
-	
-	public function getDiscussionBoards(array $parameters = array()) {
+
+    /**
+     * Retrieve the boards for a given Meetup Group
+     * @param array $parameters
+     * @return mixed
+     */
+    public function getDiscussionBoards(array $parameters = array()) {
 		return $this->get('/:urlname/boards', $parameters);
 	}
-	
-	public function getDiscussions(array $parameters = array()) {
-		return $this->get('/:urlname/boards/:bid/discussions', $parameters);
+
+    /**
+     * Retrieve the discussions of a group board.
+     * @param array $parameters
+     * @return mixed
+     */
+    public function getDiscussions(array $parameters = array()) {
+		return $this->get('/:urlname/boards/:bid/discussions/', $parameters);
 	}
+
+    /**
+     * Shad Mickelberry: Added this function to retrieve replies to post discussions.
+     * @param array $parameters
+     * @return mixed
+     */
+    public function getDiscussionsPosts(array $parameters = array()) {
+        return $this->get('/:urlname/boards/:bid/discussions/:did', $parameters);
+    }
 
 	public function getMembers(array $parameters = array()) {
 		return $this->get('/2/members', $parameters);
@@ -124,5 +144,14 @@ class Meetup {
 		
 		return $response;
 	}
-}
 
+    /**
+     * Shad Mickelberry: This function modifies the date returned from the Meetup.com api response into a readable form.
+     * @param $date
+     * @return bool|string
+     */
+    public function modifyDate($date){
+        $modified_date = date("l M jS Y",($date)/1000);
+        return $modified_date;
+    }
+}
